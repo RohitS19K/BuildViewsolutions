@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: buildview-mailer
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: GMAIL_USER
+        sync: false          # you'll set this in Render dashboard
+      - key: GMAIL_APP_PASSWORD
+        sync: false
+      - key: ALLOWED_ORIGIN
+        sync: false
+      - key: PORT
+        value: 3001
