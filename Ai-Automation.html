@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <title>AI Automation Solutions — BuildView Solutions</title>
+    <meta name="description"
+        content="AI Automation and Data Solutions by BuildView Solutions. Streamline your facility and scale with intelligent workflows.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Manrope:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <style>
+        /* GLOBAL STYLES & VARIABLES (Intact Design Theme) */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        :root {
+            --ink: #0a0a0a;
+            --paper: #f0ece4;
+            --cream: #faf8f4;
+            --accent: #F47B20;
+            --accent2: #00B4A0;
+            --navy: #0d1f3c;
+            --white: #ffffff;
+            --muted: #7a7570;
+            --border: rgba(0, 0, 0, 0.09);
+            --display: 'Bebas Neue', sans-serif;
+            --serif: 'Cormorant Garamond', serif;
+            --body: 'Manrope', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px
+        }
+
+        body {
+            background: var(--paper);
+            color: var(--ink);
+            font-family: var(--body);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            cursor: none;
+        }
+
+        img {
+            width: 100%;
+            display: block;
+            object-fit: cover
+        }
+
+        /* CURSOR & NOISE */
+        .cursor {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent);
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background 0.3s;
+            mix-blend-mode: normal;
+        }
+
+        .cursor-ring {
+            position: fixed;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--accent);
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s, height 0.4s, border-color 0.4s;
+            opacity: 0.6;
+        }
+
+        @media(max-width:767px) {
+
+            .cursor,
+            .cursor-ring {
+                display: none
+            }
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9000;
+            opacity: 0.5;
+        }
+
+        /* LOADER */
+        .loader {
+            position: fixed;
+            inset: 0;
+            background: var(--navy);
+            z-index: 8000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .loader-name {
+            font-family: var(--display);
+            font-size: clamp(36px, 8vw, 72px);
+            color: var(--white);
+            letter-spacing: 6px;
+            overflow: hidden;
+        }
+
+        .loader-name span {
+            display: block;
+            transform: translateY(110%);
+        }
+
+        .loader-bar {
+            width: 200px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loader-bar::after {
+            content: '';
+            position: absolute;
+            left: -100%;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--accent);
+            animation: loaderFill 1.4s cubic-bezier(0.77, 0, 0.18, 1) forwards;
+            animation-delay: 0.3s;
+        }
+
+        @keyframes loaderFill {
+            to {
+                left: 0
+            }
+        }
+
+        /* FULLSCREEN MENU */
+        .fullmenu {
+            position: fixed;
+            inset: 0;
+            background: var(--navy);
+            z-index: 800;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px 36px;
+            transform: translateY(-100%);
+            transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .fullmenu.open {
+            transform: translateY(0)
+        }
+
+        .menu-close {
+            position: absolute;
+            top: 24px;
+            right: 28px;
+            font-size: 28px;
+            color: var(--white);
+            cursor: pointer;
+            background: none;
+            border: none;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+
+        .menu-close:hover {
+            opacity: 1
+        }
+
+        .menu-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .menu-items a {
+            font-family: var(--display);
+            font-size: clamp(48px, 14vw, 80px);
+            color: var(--white);
+            text-decoration: none;
+            letter-spacing: 2px;
+            opacity: 0.2;
+            transition: opacity 0.4s, letter-spacing 0.4s;
+            line-height: 1.1;
+            display: block;
+        }
+
+        .menu-items a:hover {
+            opacity: 1;
+            letter-spacing: 6px;
+            color: var(--accent)
+        }
+
+        .menu-footer {
+            position: absolute;
+            bottom: 36px;
+            left: 36px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 1px;
+        }
+
+        /* NAV */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 700;
+            padding: 20px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            mix-blend-mode: normal;
+            transition: background 0.4s, box-shadow 0.4s;
+        }
+
+        nav.scrolled {
+            background: rgba(13, 31, 60, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-text {
+            font-family: var(--display);
+            font-size: 20px;
+            letter-spacing: 3px;
+            color: var(--white);
+            line-height: 1;
+        }
+
+        .logo-text small {
+            display: block;
+            font-family: var(--body);
+            font-size: 9px;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--accent2);
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--white)
+        }
+
+        .nav-cta {
+            padding: 10px 22px;
+            border-radius: 100px;
+            background: var(--accent);
+            color: var(--white);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: opacity 0.3s, transform 0.3s;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .nav-cta:hover {
+            opacity: 0.9;
+            transform: translateY(-1px)
+        }
+
+        .burger {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 4px;
+        }
+
+        .burger span {
+            display: block;
+            width: 24px;
+            height: 1.5px;
+            background: var(--white);
+            transition: 0.4s;
+        }
+
+        /* --- NEW LAYOUT: CENTERED PAGE HERO --- */
+        .hero {
+            min-height: 85svh;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background: var(--navy);
+        }
+
+        .hero-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            opacity: 0.5;
+        }
+
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(13, 31, 60, 0.4) 0%, rgba(13, 31, 60, 0.98) 100%);
+        }
+
+        .hero-grid-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            background-image: linear-gradient(rgba(0, 180, 160, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 180, 160, 0.04) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+
+        .hero-center-content {
+            position: relative;
+            z-index: 2;
+            padding: 120px 28px 40px 30px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            align-items: left;
+            width: 100%;
+        }
+
+        .hero-eyebrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .eyebrow-line {
+            width: 40px;
+            height: 1px;
+            background: var(--accent2);
+        }
+
+        .eyebrow-text {
+            font-size: 11px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+        }
+
+        .hero-title {
+            font-family: var(--display);
+            font-size: clamp(60px, 16vw, 160px);
+            line-height: 0.85;
+            letter-spacing: 3px;
+            color: var(--white);
+            margin-bottom: 0;
+            overflow: hidden;
+        }
+
+        .hero-title .word {
+            display: inline-block;
+            transform: translateY(110%);
+        }
+
+        .hero-title em {
+            display: block;
+            font-family: var(--serif);
+            font-style: italic;
+            font-size: 0.4em;
+            letter-spacing: 2px;
+            color: var(--accent2);
+            margin-bottom: 12px;
+            font-weight: 300;
+        }
+
+        /* MAGNETIC BUTTON */
+        .magnetic-wrap {
+            display: inline-block;
+            position: relative;
+            z-index: 10;
+            margin-top: 40px;
+        }
+
+        .btn-magnetic {
+            padding: 18px 42px;
+            border-radius: 100px;
+            background: var(--accent);
+            color: var(--white);
+            font-family: var(--body);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.1s linear, background 0.3s;
+        }
+
+        .btn-magnetic:hover {
+            background: var(--white);
+            color: var(--ink);
+        }
+
+        /* --- NEW LAYOUT: MASSIVE CENTERED INTRO --- */
+        .intro-block {
+            padding: 120px 28px;
+            text-align: center;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .intro-lead {
+            font-family: var(--serif);
+            font-size: clamp(32px, 6vw, 64px);
+            font-weight: 300;
+            line-height: 1.2;
+            color: var(--ink);
+            margin-bottom: 32px;
+            letter-spacing: -1px;
+        }
+
+        .intro-desc {
+            font-size: 18px;
+            line-height: 1.8;
+            color: var(--muted);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* --- NEW LAYOUT: ZIG-ZAG PROCESS FLOW --- */
+        .zig-zag-section {
+            padding: 40px 28px 120px;
+            max-width: 1400px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .zz-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+            align-items: center;
+            margin-bottom: 80px;
+        }
+
+        .zz-image {
+            width: 100%;
+            height: 400px;
+            position: relative;
+            border-radius: 4px;
+            overflow: hidden;
+            background: var(--navy);
+        }
+
+        .zz-image img {
+            width: 100%;
+            height: 120%;
+            object-fit: cover;
+            opacity: 0.85;
+        }
+
+        .zz-content {
+            padding: 20px 0;
+        }
+
+        .zz-num {
+            font-family: var(--display);
+            font-size: 80px;
+            color: var(--border);
+            line-height: 0.8;
+            margin-bottom: 20px;
+        }
+
+        .zz-content h3 {
+            font-family: var(--display);
+            font-size: 42px;
+            letter-spacing: 1.5px;
+            color: var(--ink);
+            margin-bottom: 16px;
+        }
+
+        .zz-content p {
+            font-size: 15px;
+            color: var(--muted);
+            line-height: 1.8;
+            margin-bottom: 24px;
+        }
+
+        .zz-feature-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .zz-feature-list li {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .zz-feature-list li i {
+            color: var(--accent);
+            font-size: 18px;
+        }
+
+        /* --- NEW LAYOUT: FULL BLEED OFFSET PROOFS --- */
+        .full-bleed-proofs {
+            background: var(--navy);
+            padding: 120px 0;
+        }
+
+        .fb-header {
+            text-align: center;
+            margin-bottom: 80px;
+            padding: 0 28px;
+        }
+
+        .fb-header h2 {
+            font-family: var(--display);
+            font-size: clamp(50px, 8vw, 80px);
+            color: var(--white);
+            letter-spacing: 2px;
+        }
+
+        .fb-case-study {
+            position: relative;
+            width: 100%;
+            min-height: 600px;
+            margin-bottom: 120px;
+        }
+
+        .fb-case-study:last-child {
+            margin-bottom: 0;
+        }
+
+        .fb-bg-img {
+            width: 100%;
+            height: 600px;
+            object-fit: cover;
+            opacity: 0.4;
+            transition: opacity 0.8s;
+        }
+
+        .fb-case-study:hover .fb-bg-img {
+            opacity: 0.7;
+        }
+
+        /* Floating Content Card */
+        .fb-content-card {
+            background: var(--ink);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 48px;
+            position: relative;
+            margin: -100px 28px 0;
+            z-index: 10;
+            max-width: 600px;
+        }
+
+        .fb-tag {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--white);
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 6px 12px;
+            margin-bottom: 24px;
+        }
+
+        .fb-content-card h3 {
+            font-family: var(--display);
+            font-size: 40px;
+            letter-spacing: 1px;
+            color: var(--white);
+            margin-bottom: 20px;
+            line-height: 1;
+        }
+
+        .fb-content-card p {
+            font-size: 14px;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 20px;
+        }
+
+        .fb-content-card strong {
+            color: var(--accent2);
+            font-weight: 500;
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 44px 28px 36px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            background: var(--paper);
+        }
+
+        .footer-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .footer-logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .footer-logo {
+            font-family: var(--display);
+            font-size: 28px;
+            letter-spacing: 3px;
+            color: var(--ink);
+            line-height: 1;
+        }
+
+        .footer-logo small {
+            display: block;
+            font-family: var(--body);
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 400;
+            margin-top: 3px;
+        }
+
+        .socials {
+            display: flex;
+            gap: 12px;
+        }
+
+        .social-btn {
+            width: 44px;
+            height: 44px;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            cursor: pointer;
+            color: var(--ink);
+            transition: all 0.3s;
+        }
+
+        .social-btn:hover {
+            background: var(--navy);
+            color: var(--white);
+            border-color: var(--navy);
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            border-top: 1px solid var(--border);
+            padding-top: 24px;
+        }
+
+        .footer-bottom p {
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 0.5px;
+            line-height: 1.7;
+        }
+
+        /* REVEAL */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        /* DESKTOP RESPONSIVENESS */
+        @media(min-width:1024px) {
+            nav {
+                padding: 22px 48px
+            }
+
+            .nav-links {
+                display: flex
+            }
+
+            .burger {
+                display: none
+            }
+
+            .zz-row {
+                grid-template-columns: 1.2fr 1fr;
+                gap: 80px;
+                margin-bottom: 140px;
+            }
+
+            .zz-row.reverse {
+                grid-template-columns: 1fr 1.2fr;
+            }
+
+            .zz-row.reverse .zz-image {
+                order: 2;
+            }
+
+            .zz-row.reverse .zz-content {
+                order: 1;
+                padding-left: 40px;
+            }
+
+            .zz-image {
+                height: 600px;
+            }
+
+            .fb-case-study {
+                margin-bottom: 160px;
+                display: flex;
+                align-items: center;
+            }
+
+            .fb-bg-img {
+                position: absolute;
+                right: 0;
+                top: 0;
+                width: 80%;
+                height: 100%;
+                border-radius: 8px 0 0 8px;
+            }
+
+            .fb-case-study.reverse .fb-bg-img {
+                left: 0;
+                right: auto;
+                border-radius: 0 8px 8px 0;
+            }
+
+            .fb-content-card {
+                margin: 0 0 0 10%;
+                padding: 64px;
+            }
+
+            .fb-case-study.reverse .fb-content-card {
+                margin: 0 10% 0 auto;
+            }
+
+            footer {
+                padding: 60px 48px 44px;
+                flex-direction: row;
+                align-items: center
+            }
+
+            .footer-top {
+                flex: 1;
+                flex-direction: column;
+                gap: 8px
+            }
+
+            .footer-bottom {
+                border-top: 0;
+                padding-top: 0
+            }
+        }
+
+        @media(max-width:1023px) {
+            nav {
+                background: rgba(13, 31, 60, 0.92);
+                backdrop-filter: blur(20px);
+                padding: 16px 20px;
+            }
+
+            .nav-links {
+                display: none
+            }
+
+            .burger {
+                display: flex;
+                width: 44px;
+                height: 44px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.1);
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+                gap: 5px;
+                padding: 0;
+                border: 1px solid rgba(255, 255, 255, 0.15);
+            }
+
+            .nav-cta {
+                display: none
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- CURSOR -->
+    <div class="cursor" id="cur"></div>
+    <div class="cursor-ring" id="ring"></div>
+
+    <!-- LOADER -->
+    <div class="loader" id="loader">
+        <div class="loader-name"><span id="loaderName">BUILDVIEW</span></div>
+        <div class="loader-bar"></div>
+    </div>
+
+    <!-- FULLSCREEN MENU -->
+    <div class="fullmenu" id="fullmenu">
+        <button class="menu-close" id="menuClose"><i class="ri-close-line"></i></button>
+        <div class="menu-items">
+            <a href="index.html" onclick="closeMenu()">Home</a>
+            <a href="Service.html" class="active" onclick="closeMenu()">Services</a>
+            <a href="Work.html" onclick="closeMenu()">Work</a>
+            <a href="About.html" onclick="closeMenu()">About</a>
+            <a href="Contact.html" onclick="closeMenu()">Contact</a>
+        </div>
+    </div>
+
+    <!-- NAV -->
+    <nav id="nav">
+        <a href="index.html" class="logo-wrap">
+            <div class="logo-text">BUILDVIEW<small>Solutions</small></div>
+        </a>
+        <div class="nav-right">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="Service.html" class="active">Services</a></li>
+                <li><a href="Work.html">Work</a></li>
+                <li><a href="About.html">About</a></li>
+                <li><a href="Contact.html">Contact</a></li>
+            </ul>
+            <a href="Contact.html" class="nav-cta">Get a Quote</a>
+            <button class="burger" id="burger" aria-label="Open menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <main id="service-content">
+        <!-- NEW LAYOUT: CENTERED PAGE HERO -->
+        <section class="hero">
+            <div class="hero-bg">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080'%3E%3Cdefs%3E%3ClinearGradient id='a' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%230d1f3c'/%3E%3Cstop offset='50%25' stop-color='%23093446'/%3E%3Cstop offset='100%25' stop-color='%23052430'/%3E%3C/linearGradient%3E%3CradialGradient id='b' cx='70%25' cy='30%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%2300B4A0' stop-opacity='0.25'/%3E%3Cstop offset='100%25' stop-color='%2300B4A0' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='c' cx='20%25' cy='80%25' r='40%25'%3E%3Cstop offset='0%25' stop-color='%23F47B20' stop-opacity='0.15'/%3E%3Cstop offset='100%25' stop-color='%23F47B20' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='1920' height='1080' fill='url(%23a)'/%3E%3Crect width='1920' height='1080' fill='url(%23b)'/%3E%3Crect width='1920' height='1080' fill='url(%23c)'/%3E%3Ccircle cx='960' cy='200' r='600' fill='none' stroke='%2300B4A0' stroke-opacity='0.04' stroke-width='1'/%3E%3Ccircle cx='960' cy='200' r='800' fill='none' stroke='%2300B4A0' stroke-opacity='0.03' stroke-width='1'/%3E%3Ccircle cx='960' cy='200' r='1000' fill='none' stroke='%2300B4A0' stroke-opacity='0.02' stroke-width='1'/%3E%3C/svg%3E"
+                    alt="Background">
+            </div>
+            <div class="hero-grid-overlay"></div>
+            <div class="hero-center-content">
+                <div class="hero-eyebrow">
+                    <div class="eyebrow-line"></div>
+                    <span class="eyebrow-text">Service 05</span>
+                    <div class="eyebrow-line"></div>
+                </div>
+                <h1 class="hero-title" id="heroTitle">
+                    <em>Intelligent</em>
+                    <span class="word">AI </span> <span class="word">&amp; </span> <span class="word">DATA</span><br>
+                    <span class="word">AUTOMATION</span>
+                </h1>
+                <div class="magnetic-wrap" id="magWrap">
+                    <a href="#contact" class="btn-magnetic" id="magBtn">
+                        Automate Your Business <i class="ri-arrow-right-line"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW LAYOUT: MASSIVE CENTERED INTRO -->
+        <section class="intro-block reveal">
+            <h2 class="intro-lead">Eliminate manual processes and empower your facility with intelligent, scalable
+                algorithms.</h2>
+            <p class="intro-desc">We leverage cutting-edge machine learning and predictive data pipelines to solve
+                complex operational challenges. By automating heavy data tasks, BuildView Solutions allows your team to
+                focus entirely on strategy, drastically reducing administrative overhead and human error.</p>
+        </section>
+
+        <!-- NEW LAYOUT: ZIG-ZAG PROCESS FLOW -->
+        <section class="zig-zag-section">
+
+            <!-- Row 1 -->
+            <div class="zz-row reveal">
+                <div class="zz-image">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1000"
+                        alt="Data Architecture" class="parallax-img">
+                </div>
+                <div class="zz-content">
+                    <div class="zz-num">01</div>
+                    <h3>Data Architecture & Predictive Modeling</h3>
+                    <p>We build robust data pipelines designed to process massive sets of unstructured information. From
+                        tackling complex analytical environments (such as modeling approaches used in the Ariel Data
+                        Challenge) to building secure local databases, we ensure your data is perfectly primed for
+                        machine learning algorithms.</p>
+                    <ul class="zz-feature-list">
+                        <li><i class="ri-check-line"></i> Custom API Integrations</li>
+                        <li><i class="ri-check-line"></i> Unstructured Data Parsing</li>
+                        <li><i class="ri-check-line"></i> Algorithmic Forecasting</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Row 2 (Reverse on Desktop) -->
+            <div class="zz-row reverse reveal">
+                <div class="zz-image">
+                    <img src="https://images.unsplash.com/photo-1581092160607-ee2253207963?auto=format&fit=crop&q=80&w=1000"
+                        alt="Workflow Automation" class="parallax-img">
+                </div>
+                <div class="zz-content">
+                    <div class="zz-num">02</div>
+                    <h3>Intelligent Workflow Automation</h3>
+                    <p>We connect your disconnected software stack. By utilizing intelligent scripting, we automate
+                        tedious workflows—such as pulling marketing data directly from platforms like Meta Ads and
+                        transforming it into real-time reporting dashboards.</p>
+                    <ul class="zz-feature-list">
+                        <li><i class="ri-check-line"></i> Automated Campaign Reporting</li>
+                        <li><i class="ri-check-line"></i> CRM & Email Synchronization</li>
+                        <li><i class="ri-check-line"></i> Real-time Dashboard Updates</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Row 3 -->
+            <div class="zz-row reveal">
+                <div class="zz-image">
+                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1000"
+                        alt="Smart Facility Management" class="parallax-img">
+                </div>
+                <div class="zz-content">
+                    <div class="zz-num">03</div>
+                    <h3>Smart Facility Systems</h3>
+                    <p>Optimize the physical operations of your business entity. We deploy custom digital infrastructure
+                        to route logistics, manage local inventory, and track equipment seamlessly within your facility.
+                    </p>
+                    <ul class="zz-feature-list">
+                        <li><i class="ri-check-line"></i> Inventory & Logistics Routing</li>
+                        <li><i class="ri-check-line"></i> Asset Tracking Systems</li>
+                        <li><i class="ri-check-line"></i> IoT Dashboard Integration</li>
+                    </ul>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- NEW LAYOUT: FULL BLEED OFFSET PROOFS -->
+        <section class="full-bleed-proofs">
+            <div class="fb-header reveal">
+                <h2>PROVEN AUTOMATION</h2>
+            </div>
+
+            <!-- Case Study 1 -->
+            <div class="fb-case-study reveal">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=1600"
+                    class="fb-bg-img" alt="Predictive Analytics Server">
+                <div class="fb-content-card">
+                    <span class="fb-tag">Machine Learning & Big Data</span>
+                    <h3>Predictive Analytics Pipeline</h3>
+                    <p><strong>The Challenge:</strong> A data-heavy organization needed to parse massive, complex
+                        environmental datasets to predict outcomes with high accuracy, similar to planetary atmospheric
+                        models.</p>
+                    <p><strong>The BuildView Delivery:</strong> We implemented sophisticated predictive modeling
+                        approaches capable of processing gigabytes of raw data in seconds. The automated pipeline
+                        cleaned the data and applied machine learning algorithms to output highly accurate, actionable
+                        forecasts for stakeholders.</p>
+                </div>
+            </div>
+
+            <!-- Case Study 2 (Reverse) -->
+            <div class="fb-case-study reverse reveal">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1600"
+                    class="fb-bg-img" alt="Advertising Analytics Dashboard">
+                <div class="fb-content-card">
+                    <span class="fb-tag">Workflow Automation</span>
+                    <h3>Automated Ad Reporting Engine</h3>
+                    <p><strong>The Challenge:</strong> An agency spent dozens of manual hours every month exporting raw
+                        performance metrics from Meta ads platforms to build client reports.</p>
+                    <p><strong>The BuildView Delivery:</strong> We developed a custom script that automatically
+                        retrieves, structures, and visualizes campaign performance data via APIs. This completely
+                        eliminated manual reporting, saving the agency over 40 hours of administrative work every month.
+                    </p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-top">
+            <div class="footer-logo-wrap">
+                <div class="footer-logo">BUILDVIEW<small>Solutions</small></div>
+            </div>
+        </div>
+        <div class="socials">
+            <button class="social-btn" aria-label="LinkedIn"><i class="ri-linkedin-line"></i></button>
+            <button class="social-btn" aria-label="Instagram"><i class="ri-instagram-line"></i></button>
+            <button class="social-btn" aria-label="Email"><i class="ri-mail-line"></i></button>
+        </div>
+        <div class="footer-bottom">
+            <p>Digital Agency & SaaS Studio<br><strong>Indore, Madhya Pradesh, India</strong></p>
+            <p style="text-align:right">© 2026 BuildView Solutions.<br>All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // BASE SCRIPTS (Cursor, Loader, Nav)
+        const cur = document.getElementById('cur');
+        const ring = document.getElementById('ring');
+        if (cur && ring) {
+            let mx = 0, my = 0, rx = 0, ry = 0;
+            document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cur.style.left = mx + 'px'; cur.style.top = my + 'px' });
+            (function animate() { rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12; ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; requestAnimationFrame(animate) })();
+            document.querySelectorAll('a,button,.fb-content-card, .zz-content').forEach(el => {
+                el.addEventListener('mouseenter', () => { cur.style.width = '18px'; cur.style.height = '18px'; ring.style.width = '60px'; ring.style.height = '60px' });
+                el.addEventListener('mouseleave', () => { cur.style.width = '10px'; cur.style.height = '10px'; ring.style.width = '36px'; ring.style.height = '36px' });
+            });
+        }
+
+        const burger = document.getElementById('burger');
+        const fullmenu = document.getElementById('fullmenu');
+        const menuClose = document.getElementById('menuClose');
+        if (burger) burger.addEventListener('click', () => { fullmenu.classList.add('open'); document.body.style.overflow = 'hidden' });
+        function closeMenu() { fullmenu.classList.remove('open'); document.body.style.overflow = '' }
+        if (menuClose) menuClose.addEventListener('click', closeMenu);
+
+        // INTERACTIVE ANIMATIONS SETUP
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            const nameEl = document.getElementById('loaderName');
+
+            // Loader sequence
+            gsap.from(nameEl, { y: '110%', duration: 0.8, ease: 'power4.out', delay: 0.2 });
+            gsap.to(loader, { opacity: 0, pointerEvents: 'none', duration: 0.6, delay: 1.5, onComplete: () => loader.remove() });
+
+            // Hero Staggered Text Reveal
+            gsap.to('.word', {
+                y: 0,
+                duration: 1,
+                stagger: 0.15,
+                ease: "power4.out",
+                delay: 1.6
+            });
+            gsap.from('.hero-eyebrow, .magnetic-wrap', { opacity: 0, y: 20, duration: 1, delay: 2.2 });
+        });
+
+        window.addEventListener('scroll', () => { document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60); });
+
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Standard scroll reveals
+        document.querySelectorAll('.reveal').forEach((el) => {
+            gsap.fromTo(el,
+                { opacity: 0, y: 60 },
+                { opacity: 1, y: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 85%' } }
+            );
+        });
+
+        // Subtle Hero Background Parallax
+        gsap.to('.hero-bg img', { yPercent: 15, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+
+        // Interactive Parallax for Zig Zag Images
+        document.querySelectorAll('.parallax-img').forEach((img) => {
+            gsap.to(img, {
+                yPercent: 15,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: img.parentElement,
+                    start: "top bottom",
+                    end: "bottom top",
+                    scrub: true
+                }
+            });
+        });
+
+        // Magnetic Button Interaction
+        const magWrap = document.getElementById('magWrap');
+        const magBtn = document.getElementById('magBtn');
+
+        if (magWrap && magBtn && window.innerWidth > 768) {
+            magWrap.addEventListener('mousemove', (e) => {
+                const position = magWrap.getBoundingClientRect();
+                const x = e.clientX - position.left - position.width / 2;
+                const y = e.clientY - position.top - position.height / 2;
+
+                gsap.to(magBtn, { x: x * 0.3, y: y * 0.3, duration: 0.2, ease: "power2.out" });
+            });
+
+            magWrap.addEventListener('mouseleave', () => {
+                gsap.to(magBtn, { x: 0, y: 0, duration: 0.5, ease: "elastic.out(1, 0.3)" });
+            });
+        }
+    </script>
+</body>
+
+</html>

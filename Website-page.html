@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>Custom Website Design — BuildView Solutions</title>
+  <meta name="description" content="Premium custom website design services by BuildView Solutions. We build digital storefronts that convert.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<style>
+/* GLOBAL STYLES & VARIABLES */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ink:#0a0a0a; --paper:#f0ece4; --cream:#faf8f4;
+  --accent:#F47B20; --accent2:#00B4A0; --navy:#0d1f3c;
+  --white:#ffffff; --muted:#7a7570; --border:rgba(0,0,0,0.09);
+  --display:'Bebas Neue',sans-serif; --serif:'Cormorant Garamond',serif; --body:'Manrope',sans-serif;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);overflow-x:hidden;-webkit-font-smoothing:antialiased;cursor:none;}
+img{width:100%;display:block;object-fit:cover}
+
+/* CURSOR & NOISE */
+.cursor{position:fixed;width:10px;height:10px;border-radius:50%;background:var(--accent);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width 0.3s,height 0.3s,background 0.3s;mix-blend-mode:normal;}
+.cursor-ring{position:fixed;width:36px;height:36px;border-radius:50%;border:1px solid var(--accent);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width 0.4s,height 0.4s,border-color 0.4s;opacity:0.6;}
+@media(max-width:767px){.cursor,.cursor-ring{display:none}}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9000;opacity:0.5;}
+
+/* LOADER */
+.loader{position:fixed;inset:0;background:var(--navy);z-index:8000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:24px;}
+.loader-name{font-family:var(--display);font-size:clamp(36px,8vw,72px);color:var(--white);letter-spacing:6px;overflow:hidden;}
+.loader-name span{display:block;transform:translateY(110%);}
+.loader-bar{width:200px;height:1px;background:rgba(255,255,255,0.15);position:relative;overflow:hidden;}
+.loader-bar::after{content:'';position:absolute;left:-100%;top:0;width:100%;height:100%;background:var(--accent);animation:loaderFill 1.4s cubic-bezier(0.77,0,0.18,1) forwards;animation-delay:0.3s;}
+@keyframes loaderFill{to{left:0}}
+
+/* FULLSCREEN MENU */
+.fullmenu{position:fixed;inset:0;background:var(--navy);z-index:800;display:flex;flex-direction:column;justify-content:center;padding:60px 36px;transform:translateY(-100%);transition:transform 0.6s cubic-bezier(0.77,0,0.175,1);}
+.fullmenu.open{transform:translateY(0)}
+.menu-close{position:absolute;top:24px;right:28px;font-size:28px;color:var(--white);cursor:pointer;background:none;border:none;opacity:0.6;transition:opacity 0.3s;}
+.menu-close:hover{opacity:1}
+.menu-items{display:flex;flex-direction:column;gap:8px;}
+.menu-items a{font-family:var(--display);font-size:clamp(48px,14vw,80px);color:var(--white);text-decoration:none;letter-spacing:2px;opacity:0.2;transition:opacity 0.4s, letter-spacing 0.4s;line-height:1.1;display:block;}
+.menu-items a:hover{opacity:1;letter-spacing:6px;color:var(--accent)}
+.menu-footer{position:absolute;bottom:36px;left:36px;font-size:12px;color:rgba(255,255,255,0.3);letter-spacing:1px;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;width:100%;z-index:700;padding:20px 28px;display:flex;justify-content:space-between;align-items:center;mix-blend-mode:normal;transition:background 0.4s, box-shadow 0.4s;}
+nav.scrolled{background:rgba(13,31,60,0.95);backdrop-filter:blur(20px);box-shadow:0 4px 30px rgba(0,0,0,0.2);}
+.logo-wrap{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.logo-text{font-family:var(--display);font-size:20px;letter-spacing:3px;color:var(--white);line-height:1;}
+.logo-text small{display:block;font-family:var(--body);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent2);font-weight:500;margin-top:2px;}
+.nav-right{display:flex;align-items:center;gap:28px;}
+.nav-links{display:flex;gap:28px;list-style:none;}
+.nav-links a{text-decoration:none;color:rgba(255,255,255,0.7);font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;transition:color 0.3s;}
+.nav-links a:hover, .nav-links a.active{color:var(--white)}
+.nav-cta{padding:10px 22px;border-radius:100px;background:var(--accent);color:var(--white);font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;transition:opacity 0.3s, transform 0.3s;display:inline-flex;align-items:center;}
+.nav-cta:hover{opacity:0.9;transform:translateY(-1px)}
+.burger{display:none;flex-direction:column;gap:6px;cursor:pointer;background:none;border:none;padding:4px;}
+.burger span{display:block;width:24px;height:1.5px;background:var(--white);transition:0.4s;}
+
+/* PAGE HERO */
+.hero{min-height:60svh;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;}
+.hero-bg{position:absolute;inset:0;z-index:0;background:var(--navy);}
+.hero-bg img{width:100%;height:100%;object-fit:cover;object-position:center;opacity:0.6;}
+.hero-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom, rgba(13,31,60,0.3) 0%, rgba(13,31,60,0.96) 100%);}
+.hero-grid-overlay{position:absolute;inset:0;z-index:1;background-image:linear-gradient(rgba(0,180,160,0.04) 1px, transparent 1px),linear-gradient(90deg, rgba(0,180,160,0.04) 1px, transparent 1px);background-size:60px 60px;pointer-events:none;}
+.hero-content{position:relative;z-index:2;padding:0 28px 50px;}
+.hero-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.eyebrow-line{width:32px;height:1px;background:var(--accent2);}
+.eyebrow-text{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.55);font-weight:500;}
+.hero-title{font-family:var(--display);font-size:clamp(60px,18vw,140px);line-height:0.87;letter-spacing:2px;color:var(--white);margin-bottom:0;}
+.hero-title em{display:block;font-family:var(--serif);font-style:italic;font-size:0.38em;letter-spacing:2px;color:var(--accent2);margin-bottom:4px;font-weight:300;}
+
+/* INTRO TEXT */
+.intro-section { padding: 80px 28px 40px; max-width: 1200px; margin: 0 auto; }
+.intro-lead { font-family: var(--serif); font-size: clamp(28px, 5vw, 46px); font-weight: 300; line-height: 1.3; color: var(--ink); margin-bottom: 24px; letter-spacing: -0.5px; }
+.intro-desc { font-size: 16px; line-height: 1.8; color: var(--muted); max-width: 800px; }
+
+/* HOW WE DELIVER (THE PROCESS) */
+.process-section { padding: 40px 28px 80px; max-width: 1200px; margin: 0 auto; }
+.section-heading { font-family: var(--display); font-size: 48px; letter-spacing: 2px; color: var(--navy); border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 40px; }
+.process-grid { display: grid; grid-template-columns: 1fr; gap: 40px; }
+.process-step { display: flex; gap: 24px; align-items: flex-start; }
+.step-num { font-family: var(--display); font-size: 48px; color: var(--accent2); line-height: 0.8; opacity: 0.3; }
+.step-content h4 { font-family: var(--body); font-size: 20px; font-weight: 600; color: var(--ink); margin-bottom: 12px; }
+.step-content p { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+/* PROJECT PROOFS (DARK SECTION) */
+.proof-section { background: var(--navy); padding: 100px 28px; color: var(--white); position: relative; overflow: hidden; }
+.proof-section .section-heading { color: var(--white); border-color: rgba(255,255,255,0.1); }
+.proof-grid { display: grid; grid-template-columns: 1fr; gap: 56px; max-width: 1200px; margin: 0 auto; }
+.proof-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; transition: transform 0.4s; }
+.proof-card:hover { transform: translateY(-8px); border-color: rgba(0, 180, 160, 0.3); }
+.proof-img-wrap { position: relative; height: 350px; overflow: hidden; }
+.proof-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s; opacity: 0.8; }
+.proof-card:hover .proof-img-wrap img { transform: scale(1.05); opacity: 1; }
+.proof-tag { position: absolute; top: 20px; left: 20px; background: var(--accent); color: var(--white); font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; padding: 6px 12px; }
+.proof-content { padding: 40px 32px; }
+.proof-content h3 { font-family: var(--display); font-size: 36px; letter-spacing: 1px; margin-bottom: 16px; color: var(--white); }
+.proof-content p { font-size: 14px; line-height: 1.7; color: rgba(255,255,255,0.6); margin-bottom: 16px; }
+.proof-content strong { color: var(--accent2); font-weight: 500; }
+
+/* FOOTER */
+footer{padding:44px 28px 36px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:32px; background: var(--paper);}
+.footer-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;}
+.footer-logo-wrap{display:flex;align-items:center;gap:14px;}
+.footer-logo{font-family:var(--display);font-size:28px;letter-spacing:3px;color:var(--ink);line-height:1;}
+.footer-logo small{display:block;font-family:var(--body);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:400;margin-top:3px;}
+.socials{display:flex;gap:12px;}
+.social-btn{width:44px;height:44px;border:1px solid var(--border);border-radius:50%;background:transparent;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;color:var(--ink);transition:all 0.3s;}
+.social-btn:hover{background:var(--navy);color:var(--white);border-color:var(--navy);}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;border-top:1px solid var(--border);padding-top:24px;}
+.footer-bottom p{font-size:11px;color:var(--muted);letter-spacing:0.5px;line-height:1.7;}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(50px);}
+
+/* DESKTOP RESPONSIVENESS */
+@media(min-width:768px){
+  nav{padding:22px 48px}
+  .nav-links{display:flex}
+  .burger{display:none}
+  .hero-content{padding:0 48px 64px}
+  .intro-section { padding: 100px 48px 60px; }
+  .process-section { padding: 40px 48px 100px; }
+  .process-grid { grid-template-columns: 1fr 1fr; gap: 60px; }
+  .proof-section { padding: 120px 48px; }
+  .proof-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+  footer{padding:60px 48px 44px;flex-direction:row;align-items:center}
+  .footer-top{flex:1;flex-direction:column;gap:8px}
+  .footer-bottom{border-top:0;padding-top:0}
+}
+@media(max-width:767px){
+  nav{background:rgba(13,31,60,0.92);backdrop-filter:blur(20px);padding:16px 20px;}
+  .nav-links{display:none}
+  .burger{display:flex;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.1);justify-content:center;align-items:center;flex-direction:column;gap:5px;padding:0;border:1px solid rgba(255,255,255,0.15);}
+  .nav-cta{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<!-- LOADER -->
+<div class="loader" id="loader">
+  <div class="loader-name"><span id="loaderName">BUILDVIEW</span></div>
+  <div class="loader-bar"></div>
+</div>
+
+<!-- FULLSCREEN MENU -->
+<div class="fullmenu" id="fullmenu">
+  <button class="menu-close" id="menuClose"><i class="ri-close-line"></i></button>
+  <div class="menu-items">
+    <a href="index.html" onclick="closeMenu()">Home</a>
+    <a href="Services.html" class="active" onclick="closeMenu()">Services</a>
+    <a href="Work.html" onclick="closeMenu()">Work</a>
+    <a href="About.html" onclick="closeMenu()">About</a>
+    <a href="Contact.html" onclick="closeMenu()">Contact</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="index.html" class="logo-wrap">
+    <div class="logo-text">BUILDVIEW<small>Solutions</small></div>
+  </a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="Services.html" class="active">Services</a></li>
+      <li><a href="Work.html">Work</a></li>
+      <li><a href="About.html">About</a></li>
+      <li><a href="Contact.html">Contact</a></li>
+    </ul>
+    <a href="Contact.html" class="nav-cta">Get a Quote</a>
+    <button class="burger" id="burger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<main id="service-content">
+  <!-- PAGE HERO -->
+  <section class="hero">
+    <div class="hero-bg">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080'%3E%3Cdefs%3E%3ClinearGradient id='a' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%230d1f3c'/%3E%3Cstop offset='50%25' stop-color='%23093446'/%3E%3Cstop offset='100%25' stop-color='%23052430'/%3E%3C/linearGradient%3E%3CradialGradient id='b' cx='70%25' cy='30%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%2300B4A0' stop-opacity='0.25'/%3E%3Cstop offset='100%25' stop-color='%2300B4A0' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='c' cx='20%25' cy='80%25' r='40%25'%3E%3Cstop offset='0%25' stop-color='%23F47B20' stop-opacity='0.15'/%3E%3Cstop offset='100%25' stop-color='%23F47B20' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='1920' height='1080' fill='url(%23a)'/%3E%3Crect width='1920' height='1080' fill='url(%23b)'/%3E%3Crect width='1920' height='1080' fill='url(%23c)'/%3E%3Ccircle cx='960' cy='200' r='600' fill='none' stroke='%2300B4A0' stroke-opacity='0.04' stroke-width='1'/%3E%3Ccircle cx='960' cy='200' r='800' fill='none' stroke='%2300B4A0' stroke-opacity='0.03' stroke-width='1'/%3E%3Ccircle cx='960' cy='200' r='1000' fill='none' stroke='%2300B4A0' stroke-opacity='0.02' stroke-width='1'/%3E%3C/svg%3E" alt="Background">
+    </div>
+    <div class="hero-grid-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <div class="eyebrow-line"></div>
+        <span class="eyebrow-text">Service 01</span>
+      </div>
+      <h1 class="hero-title" id="heroTitle">
+        <em>Custom</em>
+        WEBSITE DESIGN
+      </h1>
+    </div>
+  </section>
+
+  <!-- INTRO -->
+  <section class="intro-section reveal">
+    <h2 class="intro-lead">Your digital storefront is the most critical asset for modern business growth. We ensure it stands out.</h2>
+    <p class="intro-desc">At BuildView Solutions, we refuse to rely on generic templates. We build bespoke, high-performing websites tailored directly to your brand's unique needs. By combining striking visual aesthetics with technical excellence, we create platforms that not only look beautiful but load blazingly fast and convert visitors into loyal customers.</p>
+  </section>
+
+  <!-- HOW WE DELIVER -->
+  <section class="process-section reveal">
+    <h3 class="section-heading">HOW WE DELIVER</h3>
+    <div class="process-grid">
+      
+      <div class="process-step">
+        <span class="step-num">01</span>
+        <div class="step-content">
+          <h4>Strategy & Wireframing</h4>
+          <p>We begin by mapping out your user’s journey. By analyzing your target audience and business goals, we create architectural wireframes that outline the core navigation and layout before any colors or images are applied.</p>
+        </div>
+      </div>
+
+      <div class="process-step">
+        <span class="step-num">02</span>
+        <div class="step-content">
+          <h4>High-Fidelity UI Design</h4>
+          <p>This is where your brand comes to life. We design pixel-perfect, custom interfaces utilizing engaging typography, modern color palettes, and micro-interactions that captivate users and elevate your brand's perception.</p>
+        </div>
+      </div>
+
+      <div class="process-step">
+        <span class="step-num">03</span>
+        <div class="step-content">
+          <h4>Development & Engineering</h4>
+          <p>Our developers write clean, semantic code to turn the designs into a functioning reality. We prioritize lightweight frameworks to guarantee sub-second load times, mobile responsiveness, and smooth CMS integration.</p>
+        </div>
+      </div>
+
+      <div class="process-step">
+        <span class="step-num">04</span>
+        <div class="step-content">
+          <h4>Testing & Launch</h4>
+          <p>Before going live, we perform rigorous QA testing across multiple devices and browsers. We finalize core web vitals, implement technical SEO best practices, and securely deploy your new digital asset to the world.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PROJECT PROOFS -->
+  <section class="proof-section">
+    <h3 class="section-heading reveal" style="max-width: 1200px; margin: 0 auto 40px;">PROVEN RESULTS</h3>
+    
+    <div class="proof-grid">
+      
+      <!-- Proof 1: Media/Production Example -->
+      <div class="proof-card reveal">
+        <div class="proof-img-wrap">
+          <span class="proof-tag">Media & Entertainment</span>
+          <img src="https://images.unsplash.com/photo-1600132806370-bf17e65e942f?auto=format&fit=crop&q=80&w=800" alt="Film Production Website Portfolio">
+        </div>
+        <div class="proof-content">
+          <h3>Production House Portfolio</h3>
+          <p><strong>The Challenge:</strong> A high-end film and production company needed a visually striking platform to showcase heavy promotional video assets without sacrificing website speed, alongside a seamless way to handle mass casting registrations.</p>
+          <p><strong>The BuildView Delivery:</strong> We engineered a video-first UI utilizing lazy-loading techniques to maintain blazing fast speeds. We also integrated a secure, dynamic casting registration form directly into the site, allowing the agency to effortlessly manage talent submissions.</p>
+        </div>
+      </div>
+
+      <!-- Proof 2: Quick Commerce Example -->
+      <div class="proof-card reveal">
+        <div class="proof-img-wrap">
+          <span class="proof-tag">E-Commerce</span>
+          <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=800" alt="Quick Commerce Dashboard">
+        </div>
+        <div class="proof-content">
+          <h3>Local Quick-Commerce Storefront</h3>
+          <p><strong>The Challenge:</strong> A local gifting brand required a custom e-commerce solution capable of handling a strict "2-Hour Delivery" operational model, requiring real-time inventory and location-based checkout logic.</p>
+          <p><strong>The BuildView Delivery:</strong> We delivered a highly optimized custom storefront with a frictionless checkout process. The backend logic was tailored specifically to validate local delivery radiuses instantly, resulting in a 45% increase in completed local orders and zero logistical errors.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-logo-wrap">
+      <div class="footer-logo">BUILDVIEW<small>Solutions</small></div>
+    </div>
+  </div>
+  <div class="socials">
+    <button class="social-btn" aria-label="LinkedIn"><i class="ri-linkedin-line"></i></button>
+    <button class="social-btn" aria-label="Instagram"><i class="ri-instagram-line"></i></button>
+    <button class="social-btn" aria-label="Email"><i class="ri-mail-line"></i></button>
+  </div>
+  <div class="footer-bottom">
+    <p>Digital Agency & SaaS Studio<br><strong>Indore, Madhya Pradesh, India</strong></p>
+    <p style="text-align:right">© 2026 BuildView Solutions.<br>All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+// SCRIPTS
+const cur = document.getElementById('cur');
+const ring = document.getElementById('ring');
+if(cur && ring){
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+  (function animate(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animate)})();
+  document.querySelectorAll('a,button,.proof-card').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{cur.style.width='18px';cur.style.height='18px';ring.style.width='60px';ring.style.height='60px'});
+    el.addEventListener('mouseleave',()=>{cur.style.width='10px';cur.style.height='10px';ring.style.width='36px';ring.style.height='36px'});
+  });
+}
+
+const burger=document.getElementById('burger');
+const fullmenu=document.getElementById('fullmenu');
+const menuClose=document.getElementById('menuClose');
+if(burger) burger.addEventListener('click',()=>{fullmenu.classList.add('open');document.body.style.overflow='hidden'});
+function closeMenu(){fullmenu.classList.remove('open');document.body.style.overflow=''}
+if(menuClose) menuClose.addEventListener('click',closeMenu);
+
+window.addEventListener('load',()=>{
+  const loader=document.getElementById('loader');
+  const nameEl=document.getElementById('loaderName');
+  gsap.from(nameEl,{y:'110%',duration:0.8,ease:'power4.out',delay:0.2});
+  gsap.to(loader,{opacity:0,pointerEvents:'none',duration:0.6,delay:1.5,onComplete:()=>loader.remove()});
+  gsap.from('#heroTitle',{y:80,opacity:0,duration:1.2,ease:'power4.out',delay:1.7});
+});
+
+window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);});
+
+gsap.registerPlugin(ScrollTrigger);
+document.querySelectorAll('.reveal').forEach((el)=>{
+  gsap.to(el,{opacity:1,y:0,duration:0.9,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 85%'}});
+});
+gsap.to('.hero-bg img',{yPercent:15,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+</script>
+</body>
+</html>

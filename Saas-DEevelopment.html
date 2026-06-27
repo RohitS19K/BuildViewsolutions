@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>SaaS Development — BuildView Solutions</title>
+  <meta name="description" content="Custom SaaS and Cloud Platform Development by BuildView Solutions. We build scalable digital products.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<style>
+/* GLOBAL STYLES & VARIABLES */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ink:#0a0a0a; --paper:#f0ece4; --cream:#faf8f4;
+  --accent:#F47B20; --accent2:#00B4A0; --navy:#0d1f3c;
+  --white:#ffffff; --muted:#7a7570; --border:rgba(0,0,0,0.09);
+  --display:'Bebas Neue',sans-serif; --serif:'Cormorant Garamond',serif; --body:'Manrope',sans-serif;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);overflow-x:hidden;-webkit-font-smoothing:antialiased;cursor:none;}
+img{width:100%;display:block;object-fit:cover}
+
+/* CURSOR & NOISE */
+.cursor{position:fixed;width:10px;height:10px;border-radius:50%;background:var(--accent);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width 0.3s,height 0.3s,background 0.3s;mix-blend-mode:normal;}
+.cursor-ring{position:fixed;width:36px;height:36px;border-radius:50%;border:1px solid var(--accent);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width 0.4s,height 0.4s,border-color 0.4s;opacity:0.6;}
+@media(max-width:767px){.cursor,.cursor-ring{display:none}}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9000;opacity:0.5;}
+
+/* LOADER */
+.loader{position:fixed;inset:0;background:var(--navy);z-index:8000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:24px;}
+.loader-name{font-family:var(--display);font-size:clamp(36px,8vw,72px);color:var(--white);letter-spacing:6px;overflow:hidden;}
+.loader-name span{display:block;transform:translateY(110%);}
+.loader-bar{width:200px;height:1px;background:rgba(255,255,255,0.15);position:relative;overflow:hidden;}
+.loader-bar::after{content:'';position:absolute;left:-100%;top:0;width:100%;height:100%;background:var(--accent);animation:loaderFill 1.4s cubic-bezier(0.77,0,0.18,1) forwards;animation-delay:0.3s;}
+@keyframes loaderFill{to{left:0}}
+
+/* FULLSCREEN MENU */
+.fullmenu{position:fixed;inset:0;background:var(--navy);z-index:800;display:flex;flex-direction:column;justify-content:center;padding:60px 36px;transform:translateY(-100%);transition:transform 0.6s cubic-bezier(0.77,0,0.175,1);}
+.fullmenu.open{transform:translateY(0)}
+.menu-close{position:absolute;top:24px;right:28px;font-size:28px;color:var(--white);cursor:pointer;background:none;border:none;opacity:0.6;transition:opacity 0.3s;}
+.menu-close:hover{opacity:1}
+.menu-items{display:flex;flex-direction:column;gap:8px;}
+.menu-items a{font-family:var(--display);font-size:clamp(48px,14vw,80px);color:var(--white);text-decoration:none;letter-spacing:2px;opacity:0.2;transition:opacity 0.4s, letter-spacing 0.4s;line-height:1.1;display:block;}
+.menu-items a:hover{opacity:1;letter-spacing:6px;color:var(--accent)}
+.menu-footer{position:absolute;bottom:36px;left:36px;font-size:12px;color:rgba(255,255,255,0.3);letter-spacing:1px;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;width:100%;z-index:700;padding:20px 28px;display:flex;justify-content:space-between;align-items:center;mix-blend-mode:normal;transition:background 0.4s, box-shadow 0.4s;}
+nav.scrolled{background:rgba(13,31,60,0.95);backdrop-filter:blur(20px);box-shadow:0 4px 30px rgba(0,0,0,0.2);}
+.logo-wrap{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.logo-text{font-family:var(--display);font-size:20px;letter-spacing:3px;color:var(--white);line-height:1;}
+.logo-text small{display:block;font-family:var(--body);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent2);font-weight:500;margin-top:2px;}
+.nav-right{display:flex;align-items:center;gap:28px;}
+.nav-links{display:flex;gap:28px;list-style:none;}
+.nav-links a{text-decoration:none;color:rgba(255,255,255,0.7);font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;transition:color 0.3s;}
+.nav-links a:hover, .nav-links a.active{color:var(--white)}
+.nav-cta{padding:10px 22px;border-radius:100px;background:var(--accent);color:var(--white);font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;transition:opacity 0.3s, transform 0.3s;display:inline-flex;align-items:center;}
+.nav-cta:hover{opacity:0.9;transform:translateY(-1px)}
+.burger{display:none;flex-direction:column;gap:6px;cursor:pointer;background:none;border:none;padding:4px;}
+.burger span{display:block;width:24px;height:1.5px;background:var(--white);transition:0.4s;}
+
+/* PAGE HERO (Centered with stagger effect) */
+.hero{min-height:85svh;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center; align-items:center;}
+.hero-bg{position:absolute;inset:0;z-index:0;background:var(--navy);}
+.hero-bg img{width:100%;height:100%;object-fit:cover;object-position:center;opacity:0.5;}
+.hero-bg::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at center, rgba(13,31,60,0.4) 0%, rgba(13,31,60,0.98) 100%);}
+.hero-grid-overlay{position:absolute;inset:0;z-index:1;background-image:linear-gradient(rgba(0,180,160,0.04) 1px, transparent 1px),linear-gradient(90deg, rgba(0,180,160,0.04) 1px, transparent 1px);background-size:60px 60px;pointer-events:none;}
+.hero-center-content{position:relative;z-index:2;padding:140px 28px 40px; text-align:center; display:flex; flex-direction:column; align-items:center; width:100%;}
+.hero-eyebrow{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:24px;}
+.eyebrow-line{width:40px;height:1px;background:var(--accent2);}
+.eyebrow-text{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.7);font-weight:600;}
+.hero-title{font-family:var(--display);font-size:clamp(60px,14vw,140px);line-height:0.85;letter-spacing:3px;color:var(--white);margin-bottom:0; overflow:hidden;}
+.hero-title .word { display: inline-block; transform: translateY(110%); }
+.hero-title em{display:block;font-family:var(--serif);font-style:italic;font-size:0.4em;letter-spacing:2px;color:var(--accent2);margin-bottom:12px;font-weight:300;}
+
+/* INTRO */
+.intro-block { padding: 120px 28px 60px; text-align: center; max-width: 1000px; margin: 0 auto; }
+.intro-lead { font-family: var(--serif); font-size: clamp(32px, 6vw, 64px); font-weight: 300; line-height: 1.2; color: var(--ink); margin-bottom: 32px; letter-spacing: -1px; }
+
+/* --- NEW LAYOUT: TECH GRID PROCESS --- */
+.tech-grid-section { padding: 40px 28px 120px; max-width: 1400px; margin: 0 auto; }
+.tech-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
+.tech-card {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  padding: 48px 40px;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: 1;
+}
+.tech-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: var(--navy);
+  transform: translateY(100%);
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: -1;
+}
+.tech-card:hover { transform: translateY(-10px); border-color: var(--navy); }
+.tech-card:hover::before { transform: translateY(0); }
+
+.tech-icon { font-size: 40px; color: var(--accent); margin-bottom: 24px; transition: color 0.5s; display: block;}
+.tech-card:hover .tech-icon { color: var(--accent2); }
+
+.tech-card h3 { font-family: var(--display); font-size: 32px; letter-spacing: 1px; color: var(--ink); margin-bottom: 16px; transition: color 0.5s; }
+.tech-card:hover h3 { color: var(--white); }
+
+.tech-card p { font-size: 15px; color: var(--muted); line-height: 1.7; transition: color 0.5s; }
+.tech-card:hover p { color: rgba(255,255,255,0.7); }
+
+/* --- NEW LAYOUT: SPLIT-OVERLAP SHOWCASE (GLASSMORPHISM) --- */
+.glass-proofs { background: var(--navy); padding: 140px 28px; position: relative; overflow: hidden; }
+.glass-header { text-align: center; margin-bottom: 100px; color: var(--white); }
+.glass-header h2 { font-family: var(--display); font-size: clamp(50px, 8vw, 80px); letter-spacing: 2px; }
+
+.overlap-container {
+  display: flex;
+  flex-direction: column;
+  gap: 120px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.overlap-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+.overlap-img {
+  width: 100%;
+  height: 450px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.overlap-img img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; transition: opacity 0.4s; }
+.overlap-item:hover .overlap-img img { opacity: 1; }
+
+.overlap-content {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 40px;
+  border-radius: 12px;
+  width: 90%;
+  margin-top: -80px;
+  z-index: 10;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+}
+.overlap-tag { background: var(--accent); color: var(--white); font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; padding: 6px 12px; display: inline-block; margin-bottom: 20px; border-radius: 4px;}
+.overlap-content h3 { font-family: var(--display); font-size: 42px; color: var(--white); letter-spacing: 1px; margin-bottom: 16px; line-height: 1; }
+.overlap-content p { font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.8; margin-bottom: 16px; }
+.overlap-content strong { color: var(--accent2); font-weight: 500;}
+
+/* FOOTER */
+footer{padding:44px 28px 36px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:32px; background: var(--paper);}
+.footer-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;}
+.footer-logo-wrap{display:flex;align-items:center;gap:14px;}
+.footer-logo{font-family:var(--display);font-size:28px;letter-spacing:3px;color:var(--ink);line-height:1;}
+.footer-logo small{display:block;font-family:var(--body);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:400;margin-top:3px;}
+.socials{display:flex;gap:12px;}
+.social-btn{width:44px;height:44px;border:1px solid var(--border);border-radius:50%;background:transparent;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;color:var(--ink);transition:all 0.3s;}
+.social-btn:hover{background:var(--navy);color:var(--white);border-color:var(--navy);}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;border-top:1px solid var(--border);padding-top:24px;}
+.footer-bottom p{font-size:11px;color:var(--muted);letter-spacing:0.5px;line-height:1.7;}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(50px);}
+
+/* DESKTOP RESPONSIVENESS */
+@media(min-width:1024px){
+  nav{padding:22px 48px}
+  .nav-links{display:flex}
+  .burger{display:none}
+  
+  .tech-grid { grid-template-columns: repeat(3, 1fr); }
+  .tech-card { padding: 60px 48px; }
+  
+  .overlap-item { flex-direction: row; align-items: center; justify-content: flex-end; }
+  .overlap-item.reverse { justify-content: flex-start; }
+  .overlap-img { width: 70%; height: 600px; position: absolute; left: 0; }
+  .overlap-item.reverse .overlap-img { left: auto; right: 0; }
+  .overlap-content { width: 45%; margin-top: 0; margin-right: 5%; }
+  .overlap-item.reverse .overlap-content { margin-right: 0; margin-left: 5%; }
+  
+  footer{padding:60px 48px 44px;flex-direction:row;align-items:center}
+  .footer-top{flex:1;flex-direction:column;gap:8px}
+  .footer-bottom{border-top:0;padding-top:0}
+}
+@media(max-width:1023px){
+  nav{background:rgba(13,31,60,0.92);backdrop-filter:blur(20px);padding:16px 20px;}
+  .nav-links{display:none}
+  .burger{display:flex;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.1);justify-content:center;align-items:center;flex-direction:column;gap:5px;padding:0;border:1px solid rgba(255,255,255,0.15);}
+  .nav-cta{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<!-- LOADER -->
+<div class="loader" id="loader">
+  <div class="loader-name"><span id="loaderName">BUILDVIEW</span></div>
+  <div class="loader-bar"></div>
+</div>
+
+<!-- FULLSCREEN MENU -->
+<div class="fullmenu" id="fullmenu">
+  <button class="menu-close" id="menuClose"><i class="ri-close-line"></i></button>
+  <div class="menu-items">
+    <a href="index.html" onclick="closeMenu()">Home</a>
+    <a href="Service.html" class="active" onclick="closeMenu()">Services</a>
+    <a href="Work.html" onclick="closeMenu()">Work</a>
+    <a href="About.html" onclick="closeMenu()">About</a>
+    <a href="Contact.html" onclick="closeMenu()">Contact</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="index.html" class="logo-wrap">
+    <div class="logo-text">BUILDVIEW<small>Solutions</small></div>
+  </a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="Service.html" class="active">Services</a></li>
+      <li><a href="Work.html">Work</a></li>
+      <li><a href="About.html">About</a></li>
+      <li><a href="Contact.html">Contact</a></li>
+    </ul>
+    <a href="Contact.html" class="nav-cta">Get a Quote</a>
+    <button class="burger" id="burger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<main id="service-content">
+  <!-- CENTERED PAGE HERO (With Stagger Reveal) -->
+  <section class="hero">
+    <div class="hero-bg">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080'%3E%3Cdefs%3E%3ClinearGradient id='a' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%230d1f3c'/%3E%3Cstop offset='50%25' stop-color='%23093446'/%3E%3Cstop offset='100%25' stop-color='%23052430'/%3E%3C/linearGradient%3E%3CradialGradient id='b' cx='70%25' cy='30%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%2300B4A0' stop-opacity='0.25'/%3E%3Cstop offset='100%25' stop-color='%2300B4A0' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='c' cx='20%25' cy='80%25' r='40%25'%3E%3Cstop offset='0%25' stop-color='%23F47B20' stop-opacity='0.15'/%3E%3Cstop offset='100%25' stop-color='%23F47B20' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='1920' height='1080' fill='url(%23a)'/%3E%3Crect width='1920' height='1080' fill='url(%23b)'/%3E%3Crect width='1920' height='1080' fill='url(%23c)'/%3E%3Ccircle cx='960' cy='200' r='600' fill='none' stroke='%2300B4A0' stroke-opacity='0.04' stroke-width='1'/%3E%3Ccircle cx='960' cy='200' r='800' fill='none' stroke='%2300B4A0' stroke-opacity='0.03' stroke-width='1'/%3E%3Ccircle cx='960' cy='200' r='1000' fill='none' stroke='%2300B4A0' stroke-opacity='0.02' stroke-width='1'/%3E%3C/svg%3E" alt="Background">
+    </div>
+    <div class="hero-grid-overlay"></div>
+    <div class="hero-center-content">
+      <div class="hero-eyebrow">
+        <div class="eyebrow-line"></div>
+        <span class="eyebrow-text">Service 04</span>
+        <div class="eyebrow-line"></div>
+      </div>
+      <h1 class="hero-title" id="heroTitle">
+        <em>Scalable</em>
+        <span class="word">SAAS </span> <span class="word">PRODUCT</span><br> <span class="word">DEVELOPMENT</span>
+      </h1>
+    </div>
+  </section>
+
+  <!-- INTRO -->
+  <section class="intro-block reveal">
+    <h2 class="intro-lead">We turn visionary concepts into robust, recurring-revenue engines.</h2>
+    <p class="intro-desc">Software-as-a-Service requires far more than basic web development. It demands specialized knowledge in multi-tenant architectures, secure data isolation, subscription logic, and intuitive user onboarding. We engineer cloud platforms designed for rapid user acquisition and long-term retention.</p>
+  </section>
+
+  <!-- NEW LAYOUT: TECH GRID PROCESS -->
+  <section class="tech-grid-section">
+    <div class="tech-grid">
+      
+      <div class="tech-card reveal">
+        <i class="ri-database-2-line tech-icon"></i>
+        <h3>Architecture & Data Schema</h3>
+        <p>A SaaS product lives or dies by its database. We meticulously structure the backend to ensure the core infrastructure serves as a highly secure, scalable facility for multi-tenant data management.</p>
+      </div>
+
+      <div class="tech-card reveal">
+        <i class="ri-lock-password-line tech-icon"></i>
+        <h3>Secure API & Backend Logic</h3>
+        <p>We build impenetrable backend environments. Using advanced encryption and modern server-side frameworks, we construct logic layers capable of handling heavy computational tasks and third-party integrations.</p>
+      </div>
+
+      <div class="tech-card reveal">
+        <i class="ri-bank-card-line tech-icon"></i>
+        <h3>Subscription Integration</h3>
+        <p>Monetization made seamless. We integrate advanced payment gateways to manage complex billing cycles, tiered usage limits, seamless upgrades, and automated invoice generation.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- NEW LAYOUT: SPLIT-OVERLAP SHOWCASE (GLASSMORPHISM) -->
+  <section class="glass-proofs">
+    <div class="glass-header reveal">
+      <h2>SAAS CAPABILITIES</h2>
+    </div>
+
+    <div class="overlap-container">
+      
+      <!-- Case Study 1 -->
+      <div class="overlap-item reveal">
+        <div class="overlap-img">
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1200" alt="SaaS Dashboard Interface">
+        </div>
+        <div class="overlap-content">
+          <span class="overlap-tag">Data Visualization</span>
+          <h3>Marketing Analytics SaaS</h3>
+          <p><strong>The Challenge:</strong> Digital agencies needed a white-label solution to automatically pull campaign data (spanning periods like August to October) from major ad networks and present it instantly.</p>
+          <p><strong>The BuildView Delivery:</strong> We developed a cloud-based SaaS platform that authenticates with external ad APIs. The system processes the raw data and populates an elegant, interactive dashboard, eliminating manual report generation.</p>
+        </div>
+      </div>
+
+      <!-- Case Study 2 (Reverse Layout) -->
+      <div class="overlap-item reverse reveal">
+        <div class="overlap-img">
+          <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80&w=1200" alt="Server Infrastructure">
+        </div>
+        <div class="overlap-content">
+          <span class="overlap-tag">Cloud Infrastructure</span>
+          <h3>Secure Multi-Tenant HR Platform</h3>
+          <p><strong>The Challenge:</strong> A growing enterprise required an isolated environment to manage sensitive onboarding and payroll data for thousands of users across distinct organizational departments.</p>
+          <p><strong>The BuildView Delivery:</strong> We deployed a secure, multi-tenant cloud architecture. By implementing strict role-based access control and encrypted databases, we ensured zero data cross-contamination while maintaining sub-second application speeds.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-logo-wrap">
+      <div class="footer-logo">BUILDVIEW<small>Solutions</small></div>
+    </div>
+  </div>
+  <div class="socials">
+    <button class="social-btn" aria-label="LinkedIn"><i class="ri-linkedin-line"></i></button>
+    <button class="social-btn" aria-label="Instagram"><i class="ri-instagram-line"></i></button>
+    <button class="social-btn" aria-label="Email"><i class="ri-mail-line"></i></button>
+  </div>
+  <div class="footer-bottom">
+    <p>Digital Agency & SaaS Studio<br><strong>Indore, Madhya Pradesh, India</strong></p>
+    <p style="text-align:right">© 2026 BuildView Solutions.<br>All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+// BASE SCRIPTS
+const cur = document.getElementById('cur');
+const ring = document.getElementById('ring');
+if(cur && ring){
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+  (function animate(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animate)})();
+  document.querySelectorAll('a,button,.tech-card,.overlap-content').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{cur.style.width='18px';cur.style.height='18px';ring.style.width='60px';ring.style.height='60px'});
+    el.addEventListener('mouseleave',()=>{cur.style.width='10px';cur.style.height='10px';ring.style.width='36px';ring.style.height='36px'});
+  });
+}
+
+const burger=document.getElementById('burger');
+const fullmenu=document.getElementById('fullmenu');
+const menuClose=document.getElementById('menuClose');
+if(burger) burger.addEventListener('click',()=>{fullmenu.classList.add('open');document.body.style.overflow='hidden'});
+function closeMenu(){fullmenu.classList.remove('open');document.body.style.overflow=''}
+if(menuClose) menuClose.addEventListener('click',closeMenu);
+
+// INTERACTIVE ANIMATIONS SETUP
+window.addEventListener('load',()=>{
+  const loader=document.getElementById('loader');
+  const nameEl=document.getElementById('loaderName');
+  
+  // Loader sequence
+  gsap.from(nameEl,{y:'110%',duration:0.8,ease:'power4.out',delay:0.2});
+  gsap.to(loader,{opacity:0,pointerEvents:'none',duration:0.6,delay:1.5,onComplete:()=>loader.remove()});
+  
+  // Hero Staggered Text Reveal (Retained)
+  gsap.to('.word', {
+    y: 0,
+    duration: 1,
+    stagger: 0.15,
+    ease: "power4.out",
+    delay: 1.6
+  });
+  gsap.from('.hero-eyebrow', { opacity: 0, y: 20, duration: 1, delay: 2.2 });
+});
+
+window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);});
+
+gsap.registerPlugin(ScrollTrigger);
+
+// Standard scroll reveals
+document.querySelectorAll('.reveal').forEach((el)=>{
+  gsap.fromTo(el, 
+    { opacity: 0, y: 60 },
+    { opacity: 1, y: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 85%' } }
+  );
+});
+
+// Subtle Hero Background Parallax
+gsap.to('.hero-bg img',{yPercent:15,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+</script>
+</body>
+</html>
